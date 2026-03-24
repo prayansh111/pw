@@ -21,7 +21,10 @@ html_content = """
         
         .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #efefef; transition: transform 0.3s; position: relative; }
         .card:hover { transform: translateY(-5px); }
-        .card-img { height: 150px; background: #1b4697; display: flex; align-items: center; justify-content: center; color: white; font-size: 40px; }
+        
+        /* THE IMAGE PLACEHOLDER */
+        .card-img-placeholder { height: 180px; width: 100%; object-fit: cover; background: #eee; }
+        
         .card-body { padding: 20px; text-align: left; }
         .course-name { font-size: 18px; font-weight: bold; margin: 0 0 10px 0; color: #333; height: 50px; }
         .price-tag { font-size: 20px; font-weight: 700; color: #1b4697; margin-bottom: 15px; }
@@ -46,13 +49,13 @@ html_content = """
         </nav>
         
         <header class="hero">
-            <h1>Our <span class="blue-text">Popular</span> Courses</h1>
-            <p style="color: #666;">Invest in your future with our industry-ready programs.</p>
+            <h1>Learn <span class="blue-text">From the Best</span></h1>
+            <p style="color: #666;">Unlock your potential with our AI-powered courses.</p>
         </header>
 
         <div class="course-container">
             <div class="card" style="border: 2px solid #eb5e28;">
-                <div class="card-img" style="background: #eb5e28;">C++</div>
+                <img src="https://source.unsplash.com/featured/?cpp,programming,datastructures" class="card-img-placeholder" alt="C++ Course">
                 <div class="card-body">
                     <p class="course-name">Decode C++ with DSA: Programming Powerhouse</p>
                     <div class="price-tag"><span class="old-price">₹19,999</span>₹11,499</div>
@@ -61,7 +64,7 @@ html_content = """
             </div>
 
             <div class="card">
-                <div class="card-img">JS</div>
+                <img src="https://source.unsplash.com/featured/?javascript,react,mern" class="card-img-placeholder" alt="Web Dev Course">
                 <div class="card-body">
                     <p class="course-name">Full Stack Web Development (MERN)</p>
                     <div class="price-tag"><span class="old-price">₹12,000</span>₹5,999</div>
@@ -70,7 +73,7 @@ html_content = """
             </div>
 
             <div class="card">
-                <div class="card-img" style="background: #2b2b2b;">AI</div>
+                <img src="https://source.unsplash.com/featured/?artificialintelligence,datascience" class="card-img-placeholder" alt="Data Science Course">
                 <div class="card-body">
                     <p class="course-name">Data Science & Machine Learning Masters</p>
                     <div class="price-tag"><span class="old-price">₹25,000</span>₹16,999</div>
@@ -79,7 +82,7 @@ html_content = """
             </div>
 
             <div class="card">
-                <div class="card-img" style="background: #5a32a8;">Java</div>
+                <img src="https://source.unsplash.com/featured/?java,coding,backend" class="card-img-placeholder" alt="Java Course">
                 <div class="card-body">
                     <p class="course-name">Java Backend Development with Microservices</p>
                     <div class="price-tag"><span class="old-price">₹14,000</span>₹5,999</div>
@@ -88,7 +91,7 @@ html_content = """
             </div>
             
             <div class="card">
-                <div class="card-img" style="background: #00a8e8;">Cloud</div>
+                <img src="https://source.unsplash.com/featured/?cloud,aws,devops" class="card-img-placeholder" alt="Cloud Course">
                 <div class="card-body">
                     <p class="course-name">DevOps and Cloud Computing (AWS/Azure)</p>
                     <div class="price-tag"><span class="old-price">₹22,000</span>₹16,999</div>
@@ -111,10 +114,11 @@ html_content = """
 
     <div id="page-maint" class="hidden">
         <div class="box">
-            <h1>🛠️</h1>
-            <h2>Under Maintenance</h2>
-            <p>Our payment gateway is being updated.<br>Please buy after <b>12:00 AM</b>.</p>
-            <button class="login-btn" style="background: #666;" onclick="window.location.reload()">Back to Store</button>
+            <h1 style="font-size: 60px; margin-bottom: 10px;">🛠️</h1>
+            <h2 style="color: #333;">Under Maintenance</h2>
+            <p style="font-size: 18px; color: #666; line-height: 1.5;">This specific C++ course is being updated.<br>Please view after <b>12:00 AM</b>.</p>
+            <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+            <button class="login-btn" style="background: #666;" onclick="window.location.reload()">Refresh Page</button>
         </div>
     </div>
 
@@ -140,4 +144,4 @@ html_content = """
 </html>
 """
 
-components.html(html_content, height=1500, scrolling=True)
+components.html(html_content, height=1800, scrolling=True)
