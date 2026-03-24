@@ -1,94 +1,120 @@
 import streamlit as st
 import streamlit.components.v1 as components
 
-st.set_page_config(page_title="PW Skills | Classroom", layout="wide")
+st.set_page_config(page_title="PW Skills | Student Portal", layout="wide", initial_sidebar_state="collapsed")
 
-html_content = """
+# Your converted Direct Stream Link
+DIRECT_VIDEO_URL = "https://drive.google.com/uc?export=download&id=1RWNlrRKh2Qef52zOsAPnvzutFXd4vlyX"
+
+html_content = f"""
 <!DOCTYPE html>
 <html>
 <head>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f0f2f5; }
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 10px 60px; background: #1b4697; color: white; }
+        body {{ font-family: 'Segoe UI', sans-serif; margin: 0; background: #0b0e11; color: white; overflow: hidden; }}
+        .navbar {{ display: flex; justify-content: space-between; padding: 15px 60px; background: #1b4697; border-bottom: 1px solid #2d333b; }}
         
-        /* Video Template Layout */
-        .classroom-container { display: flex; height: 90vh; overflow: hidden; }
+        .classroom-container {{ display: flex; height: 90vh; }}
         
-        /* Left Side: Video Player */
-        .video-main { flex: 3; padding: 20px; background: #000; display: flex; flex-direction: column; }
-        .video-player { flex: 1; border-radius: 8px; overflow: hidden; background: #1a1a1a; position: relative; }
-        iframe { width: 100%; height: 100%; border: none; }
+        /* THE CUSTOM VIDEO PLAYER */
+        .video-section {{ flex: 3; padding: 20px; background: #000; display: flex; flex-direction: column; overflow-y: auto; }}
+        .player-wrapper {{ width: 100%; position: relative; background: #000; border-radius: 12px; overflow: hidden; box-shadow: 0 0 50px rgba(0,0,0,0.8); border: 1px solid #333; }}
+        video {{ width: 100%; height: auto; max-height: 70vh; outline: none; }}
         
-        /* Right Side: Playlist Sidebar */
-        .sidebar-playlist { flex: 1; background: white; border-left: 1px solid #ddd; overflow-y: auto; display: flex; flex-direction: column; }
-        .playlist-header { padding: 20px; border-bottom: 2px solid #f0f2f5; background: #fff; position: sticky; top: 0; }
-        .module-item { padding: 15px 20px; border-bottom: 1px solid #f0f2f5; cursor: pointer; transition: 0.2s; font-size: 14px; display: flex; align-items: center; gap: 10px; }
-        .module-item:hover { background: #eef2ff; }
-        .module-item.active { border-left: 4px solid #1b4697; background: #f8f9ff; font-weight: bold; }
+        /* PLAYLIST SIDEBAR */
+        .sidebar {{ flex: 1; background: #161b22; border-left: 1px solid #30363d; overflow-y: auto; }}
+        .sidebar-header {{ padding: 20px; background: #0d1117; font-weight: bold; color: #58a6ff; border-bottom: 1px solid #30363d; }}
+        .lecture-item {{ padding: 15px 20px; border-bottom: 1px solid #21262d; cursor: pointer; transition: 0.2s; font-size: 14px; display: flex; justify-content: space-between; }}
+        .lecture-item:hover {{ background: #1b4697; color: white; }}
+        .active-lec {{ background: #1b4697; border-left: 4px solid #fff; font-weight: bold; }}
         
-        .play-icon { width: 20px; height: 20px; opacity: 0.6; }
-        .hidden { display: none; }
-        
-        /* Login UI */
-        .login-box { max-width: 400px; margin: 100px auto; background: white; padding: 40px; border-radius: 12px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        input { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; }
-        .btn { background: #1b4697; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; }
+        /* CUSTOM CONTROLS */
+        .controls {{ margin-top: 15px; display: flex; gap: 15px; align-items: center; background: #161b22; padding: 10px; border-radius: 8px; border: 1px solid #333; }}
+        .btn-speed {{ background: #30363d; color: white; border: 1px solid #444; padding: 6px 15px; border-radius: 6px; cursor: pointer; font-size: 12px; }}
+        .btn-speed:hover {{ background: #1b4697; }}
+
+        /* LOGIN UI */
+        .hidden {{ display: none; }}
+        .login-box {{ max-width: 380px; margin: 120px auto; background: #161b22; padding: 40px; border-radius: 15px; text-align: center; border: 1px solid #30363d; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }}
+        input {{ width: 90%; padding: 12px; margin: 10px 0; background: #0d1117; border: 1px solid #30363d; color: white; border-radius: 8px; font-size: 16px; }}
+        .btn-login {{ background: #1b4697; color: white; border: none; padding: 15px; border-radius: 8px; width: 100%; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px; }}
     </style>
 </head>
 <body>
 
     <div id="page-login">
         <div class="login-box">
-            <h2 style="color:#1b4697">PW Skills Login</h2>
+            <h2 style="margin-bottom:5px;">PW SKILLS</h2>
+            <p style="color:#8b949e; font-size:14px; margin-bottom:25px;">Classroom Access</p>
             <input type="text" id="phone" placeholder="Mobile Number">
             <input type="password" id="pass" placeholder="Password">
-            <button class="btn" onclick="validate()">LOGIN</button>
+            <button class="btn-login" onclick="login()">START LEARNING</button>
         </div>
     </div>
 
-    <div id="page-dashboard" class="hidden">
+    <div id="page-dash" class="hidden">
         <nav class="navbar">
-            <div style="font-size:20px; font-weight:bold">PW SKILLS</div>
-            <div style="font-size:14px">Pushkar Kumar | Decode C++ with DSA</div>
+            <div style="font-weight:800; font-size:22px; letter-spacing:1px;">PW SKILLS</div>
+            <div style="font-size:13px; color:#8b949e;">Student: <b>Pushkar Kumar</b></div>
         </nav>
 
         <div class="classroom-container">
-            <div class="video-main">
-                <div class="video-player">
-                    <iframe src="https://drive.google.com/embeddedfolderview?id=1RGbhYd87-7iNEzwWc1hIzE5WAMG7Je9f#list"></iframe>
+            <div class="video-section">
+                <div class="player-wrapper">
+                    <video id="mainPlayer" controls controlsList="nodownload" poster="https://pwskills.com/images/home/banner-1.webp">
+                        <source id="videoSource" src="{DIRECT_VIDEO_URL}" type="video/mp4">
+                        Your browser does not support HTML5 video.
+                    </video>
                 </div>
-                <div style="color: white; padding: 15px 0;">
-                    <h3 style="margin:0">Lec 01: Introduction to DSA & Complexity</h3>
-                    <p style="font-size:12px; opacity:0.7">Decode C++ Alpha Batch 2026</p>
+                
+                <div class="controls">
+                    <span style="font-size:12px; color:#8b949e;">STUDY SPEED:</span>
+                    <button class="btn-speed" onclick="setSpeed(1)">1x</button>
+                    <button class="btn-speed" onclick="setSpeed(1.25)">1.25x</button>
+                    <button class="btn-speed" onclick="setSpeed(1.5)">1.5x</button>
+                    <button class="btn-speed" onclick="setSpeed(2)">2x</button>
+                </div>
+
+                <div style="margin-top:20px; padding-bottom:40px;">
+                    <h2 id="currentTitle" style="margin:0;">Lec 01: Introduction to C++ and DSA</h2>
+                    <p style="color:#8b949e; font-size:14px; margin-top:8px;">Batch: Alpha 2026 | Study Material Verified</p>
+                    <hr style="border:0; border-top:1px solid #333; margin:20px 0;">
+                    <button onclick="window.print()" style="background:#22c55e; color:white; border:none; padding:12px 25px; border-radius:6px; cursor:pointer; font-weight:bold;">Download Batch Invoice</button>
                 </div>
             </div>
 
-            <div class="sidebar-playlist">
-                <div class="playlist-header">
-                    <h4 style="margin:0">Course Content</h4>
-                    <p style="font-size:11px; color:#666">12 / 150 Lessons Completed</p>
+            <div class="sidebar">
+                <div class="sidebar-header">COURSE CONTENT</div>
+                <div class="lecture-item active-lec">
+                    <span>01. Master Class: C++ Basics</span>
+                    <span style="color:#22c55e;">✔</span>
                 </div>
-                
-                <div class="module-item active"><span>▶</span> Lec 01: Introduction to DSA</div>
-                <div class="module-item"><span>▶</span> Lec 02: Space & Time Complexity</div>
-                <div class="module-item"><span>▶</span> Lec 03: Variables and Data Types</div>
-                <div class="module-item"><span>▶</span> Lec 04: If-Else & Loops</div>
-                <div class="module-item"><span>▶</span> Lec 05: Patterns Part-1</div>
-                <div class="module-item"><span>▶</span> Lec 06: Patterns Part-2</div>
-                <div class="module-item"><span>▶</span> Lec 07: Functions in C++</div>
-                <div class="module-item"><span>▶</span> Lec 08: Arrays Introduction</div>
-                <div class="module-item" style="opacity:0.5"><span>🔒</span> Lec 09: Binary Search (Locked)</div>
+                <div class="lecture-item">
+                    <span>02. Variables & Data Types</span>
+                    <span>🔒</span>
+                </div>
+                <div class="lecture-item">
+                    <span>03. Operators & Logic</span>
+                    <span>🔒</span>
+                </div>
+                <div style="padding:20px; font-size:12px; color:#8b949e;">
+                    Upcoming: Lec 04 (Next Week)
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        function validate() {
-            if(document.getElementById('phone').value === "9835871031" && document.getElementById('pass').value === "896972") {
+        function login() {{
+            if(document.getElementById('phone').value === "9835871031" && document.getElementById('pass').value === "896972") {{
                 document.getElementById('page-login').classList.add('hidden');
-                document.getElementById('page-dashboard').classList.remove('hidden');
-            } else { alert("Wrong Credentials"); }
-        }
+                document.getElementById('page-dash').classList.remove('hidden');
+            }} else {{ alert("Invalid login!"); }}
+        }}
+
+        function setSpeed(s) {{
+            document.getElementById('mainPlayer').playbackRate = s;
+        }}
     </script>
 </body>
 </html>
