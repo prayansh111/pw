@@ -1,123 +1,120 @@
 import streamlit as st
 import streamlit.components.v1 as components
 
-st.set_page_config(page_title="PW Skills | Student Portal", layout="wide", initial_sidebar_state="collapsed")
+# 1. Setup the Page
+st.set_page_config(page_title="PW Skills | Alpha 2026", layout="wide")
 
-# Your converted Direct Stream Link
-DIRECT_VIDEO_URL = "https://drive.google.com/uc?export=download&id=1RWNlrRKh2Qef52zOsAPnvzutFXd4vlyX"
+# 2. Your Video ID (Extracted from your link)
+# Original: https://drive.google.com/file/d/1RWNlrRKh2Qef52zOsAPnvzutFXd4vlyX/view
+VIDEO_ID = "1RWNlrRKh2Qef52zOsAPnvzutFXd4vlyX"
 
+# 3. The Professional HTML/CSS Code
 html_content = f"""
 <!DOCTYPE html>
 <html>
 <head>
     <style>
-        body {{ font-family: 'Segoe UI', sans-serif; margin: 0; background: #0b0e11; color: white; overflow: hidden; }}
-        .navbar {{ display: flex; justify-content: space-between; padding: 15px 60px; background: #1b4697; border-bottom: 1px solid #2d333b; }}
+        body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: #0b0e11; color: white; }}
+        .navbar {{ display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; background: #1b4697; border-bottom: 1px solid #2d333b; }}
+        .logo {{ font-size: 24px; font-weight: 800; letter-spacing: 1px; }}
         
-        .classroom-container {{ display: flex; height: 90vh; }}
+        .classroom-main {{ display: flex; height: 88vh; }}
         
-        /* THE CUSTOM VIDEO PLAYER */
-        .video-section {{ flex: 3; padding: 20px; background: #000; display: flex; flex-direction: column; overflow-y: auto; }}
-        .player-wrapper {{ width: 100%; position: relative; background: #000; border-radius: 12px; overflow: hidden; box-shadow: 0 0 50px rgba(0,0,0,0.8); border: 1px solid #333; }}
-        video {{ width: 100%; height: auto; max-height: 70vh; outline: none; }}
-        
-        /* PLAYLIST SIDEBAR */
-        .sidebar {{ flex: 1; background: #161b22; border-left: 1px solid #30363d; overflow-y: auto; }}
-        .sidebar-header {{ padding: 20px; background: #0d1117; font-weight: bold; color: #58a6ff; border-bottom: 1px solid #30363d; }}
-        .lecture-item {{ padding: 15px 20px; border-bottom: 1px solid #21262d; cursor: pointer; transition: 0.2s; font-size: 14px; display: flex; justify-content: space-between; }}
-        .lecture-item:hover {{ background: #1b4697; color: white; }}
-        .active-lec {{ background: #1b4697; border-left: 4px solid #fff; font-weight: bold; }}
-        
-        /* CUSTOM CONTROLS */
-        .controls {{ margin-top: 15px; display: flex; gap: 15px; align-items: center; background: #161b22; padding: 10px; border-radius: 8px; border: 1px solid #333; }}
-        .btn-speed {{ background: #30363d; color: white; border: 1px solid #444; padding: 6px 15px; border-radius: 6px; cursor: pointer; font-size: 12px; }}
-        .btn-speed:hover {{ background: #1b4697; }}
+        /* Video Container */
+        .video-player-section {{ flex: 3; padding: 20px; background: #000; display: flex; flex-direction: column; }}
+        .iframe-wrapper {{ 
+            width: 100%; 
+            position: relative; 
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #333;
+        }}
+        iframe {{
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            width: 100%; height: 100%;
+            border: none;
+        }}
 
-        /* LOGIN UI */
+        /* Sidebar Playlist */
+        .playlist-sidebar {{ flex: 1; background: #161b22; border-left: 1px solid #30363d; overflow-y: auto; }}
+        .sidebar-title {{ padding: 20px; font-size: 14px; font-weight: bold; color: #58a6ff; border-bottom: 1px solid #30363d; background: #0d1117; }}
+        .lecture-card {{ padding: 15px 20px; border-bottom: 1px solid #21262d; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; }}
+        .lecture-card:hover {{ background: #1b4697; }}
+        .active-lecture {{ background: #1b4697; border-left: 4px solid #fff; }}
+
+        /* Login Styling */
+        .login-overlay {{ position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0d1117; display: flex; justify-content: center; align-items: center; z-index: 1000; }}
+        .login-card {{ background: #161b22; padding: 40px; border-radius: 15px; border: 1px solid #30363d; text-align: center; width: 350px; }}
+        input {{ width: 90%; padding: 12px; margin: 10px 0; background: #0b0e11; border: 1px solid #30363d; color: white; border-radius: 6px; }}
+        .btn-blue {{ background: #1b4697; color: white; border: none; padding: 14px; width: 100%; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }}
         .hidden {{ display: none; }}
-        .login-box {{ max-width: 380px; margin: 120px auto; background: #161b22; padding: 40px; border-radius: 15px; text-align: center; border: 1px solid #30363d; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }}
-        input {{ width: 90%; padding: 12px; margin: 10px 0; background: #0d1117; border: 1px solid #30363d; color: white; border-radius: 8px; font-size: 16px; }}
-        .btn-login {{ background: #1b4697; color: white; border: none; padding: 15px; border-radius: 8px; width: 100%; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px; }}
     </style>
 </head>
 <body>
 
-    <div id="page-login">
-        <div class="login-box">
-            <h2 style="margin-bottom:5px;">PW SKILLS</h2>
-            <p style="color:#8b949e; font-size:14px; margin-bottom:25px;">Classroom Access</p>
-            <input type="text" id="phone" placeholder="Mobile Number">
-            <input type="password" id="pass" placeholder="Password">
-            <button class="btn-login" onclick="login()">START LEARNING</button>
+    <div id="auth-screen" class="login-overlay">
+        <div class="login-card">
+            <h2 style="margin-top:0;">PW SKILLS</h2>
+            <p style="color:#8b949e; font-size:14px;">Enter credentials to unlock Alpha Batch</p>
+            <input type="text" id="mob" placeholder="Mobile Number">
+            <input type="password" id="pin" placeholder="Password">
+            <button class="btn-blue" onclick="validate()">LOGIN</button>
         </div>
     </div>
 
-    <div id="page-dash" class="hidden">
-        <nav class="navbar">
-            <div style="font-weight:800; font-size:22px; letter-spacing:1px;">PW SKILLS</div>
-            <div style="font-size:13px; color:#8b949e;">Student: <b>Pushkar Kumar</b></div>
-        </nav>
+    <div id="classroom-ui" class="hidden">
+        <div class="navbar">
+            <div class="logo">PW SKILLS</div>
+            <div style="font-size:13px; color:#c9d1d9;">User: <b>Pushkar Kumar</b> | Batch 2026</div>
+        </div>
 
-        <div class="classroom-container">
-            <div class="video-section">
-                <div class="player-wrapper">
-                    <video id="mainPlayer" controls controlsList="nodownload" poster="https://pwskills.com/images/home/banner-1.webp">
-                        <source id="videoSource" src="{DIRECT_VIDEO_URL}" type="video/mp4">
-                        Your browser does not support HTML5 video.
-                    </video>
+        <div class="classroom-main">
+            <div class="video-player-section">
+                <div class="iframe-wrapper">
+                    <iframe src="https://drive.google.com/file/d/{VIDEO_ID}/preview" allow="autoplay"></iframe>
                 </div>
-                
-                <div class="controls">
-                    <span style="font-size:12px; color:#8b949e;">STUDY SPEED:</span>
-                    <button class="btn-speed" onclick="setSpeed(1)">1x</button>
-                    <button class="btn-speed" onclick="setSpeed(1.25)">1.25x</button>
-                    <button class="btn-speed" onclick="setSpeed(1.5)">1.5x</button>
-                    <button class="btn-speed" onclick="setSpeed(2)">2x</button>
-                </div>
-
-                <div style="margin-top:20px; padding-bottom:40px;">
-                    <h2 id="currentTitle" style="margin:0;">Lec 01: Introduction to C++ and DSA</h2>
-                    <p style="color:#8b949e; font-size:14px; margin-top:8px;">Batch: Alpha 2026 | Study Material Verified</p>
-                    <hr style="border:0; border-top:1px solid #333; margin:20px 0;">
-                    <button onclick="window.print()" style="background:#22c55e; color:white; border:none; padding:12px 25px; border-radius:6px; cursor:pointer; font-weight:bold;">Download Batch Invoice</button>
+                <div style="margin-top:20px;">
+                    <h2 style="margin:0;">Lec 01: Getting Started with C++ & DSA</h2>
+                    <p style="color:#8b949e; font-size:14px; margin-top:10px;">Welcome to the first lecture. Ensure you have your compiler ready.</p>
                 </div>
             </div>
 
-            <div class="sidebar">
-                <div class="sidebar-header">COURSE CONTENT</div>
-                <div class="lecture-item active-lec">
-                    <span>01. Master Class: C++ Basics</span>
-                    <span style="color:#22c55e;">✔</span>
+            <div class="playlist-sidebar">
+                <div class="sidebar-title">LECTURE LIST</div>
+                <div class="lecture-card active-lecture">
+                    <div>1. Introduction & Setup</div>
+                    <span style="color:#22c55e;">▶ Playing</span>
                 </div>
-                <div class="lecture-item">
-                    <span>02. Variables & Data Types</span>
+                <div class="lecture-card">
+                    <div>2. Flowcharts (Locked)</div>
                     <span>🔒</span>
                 </div>
-                <div class="lecture-item">
-                    <span>03. Operators & Logic</span>
+                <div class="lecture-card">
+                    <div>3. Pseudocode (Locked)</div>
                     <span>🔒</span>
-                </div>
-                <div style="padding:20px; font-size:12px; color:#8b949e;">
-                    Upcoming: Lec 04 (Next Week)
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        function login() {{
-            if(document.getElementById('phone').value === "9835871031" && document.getElementById('pass').value === "896972") {{
-                document.getElementById('page-login').classList.add('hidden');
-                document.getElementById('page-dash').classList.remove('hidden');
-            }} else {{ alert("Invalid login!"); }}
-        }}
-
-        function setSpeed(s) {{
-            document.getElementById('mainPlayer').playbackRate = s;
+        function validate() {{
+            const u = document.getElementById('mob').value;
+            const p = document.getElementById('pin').value;
+            if(u === "9835871031" && p === "896972") {{
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('classroom-ui').classList.remove('hidden');
+            }} else {{
+                alert("Incorrect Details");
+            }}
         }}
     </script>
 </body>
 </html>
 """
 
-components.html(html_content, height=1000, scrolling=False)
+# 4. Render in Streamlit
+components.html(html_content, height=900, scrolling=False)
