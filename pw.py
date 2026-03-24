@@ -110,8 +110,8 @@ html_content = """
     <div id="page-login" class="hidden">
         <div class="box">
             <h2 style="color:#1b4697;">Account Login</h2>
-            <input type="text" id="phone" placeholder="Enter Phone Number (9835871031)">
-            <input type="password" id="pass" placeholder="Enter Password (896972)">
+            <input type="text" id="phone" placeholder="Enter Phone Number">
+            <input type="password" id="pass" placeholder="Enter Password">
             <button class="buy-btn" style="background:#eb5e28" onclick="validate()">Login to Purchase</button>
             <p onclick="showPage('page-home')" style="cursor:pointer; color:#1b4697; margin-top:15px; font-size:14px;">← Back to Courses</p>
         </div>
@@ -136,6 +136,7 @@ html_content = """
         function validate() {
             const ph = document.getElementById('phone').value;
             const ps = document.getElementById('pass').value;
+            // The logic stays the same, but the UI is now clean
             if(ph === "9835871031" && ps === "896972") {
                 showPage('page-maint');
             } else {
